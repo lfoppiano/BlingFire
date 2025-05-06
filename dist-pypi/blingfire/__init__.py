@@ -13,13 +13,22 @@ blingfire = None
 
 # detect windows
 if platform.system() == "Windows":
-    blingfire = cdll.LoadLibrary(os.path.join(path, "blingfiretokdll.dll"))
+    if platform.processor() == "arm":
+        blingfire = cdll.LoadLibrary(os.path.join(path, "win/arm64/blingfiretokdll.dll"))
+    else:
+        blingfire = cdll.LoadLibrary(os.path.join(path, "win/arm/blingfiretokdll.dll"))
 # detect Mac OSX
 elif platform.system() == "Darwin":
-    blingfire = cdll.LoadLibrary(os.path.join(path, "libblingfiretokdll.dylib"))
+    if platform.processor() == "arm":
+        blingfire = cdll.LoadLibrary(os.path.join(path, "mac/arm64/libblingfiretokdll.dylib"))
+    else:
+        blingfire = cdll.LoadLibrary(os.path.join(path, "mac/64/libblingfiretokdll.dylib"))
 else:
 # detect linux
-    blingfire = cdll.LoadLibrary(os.path.join(path, "libblingfiretokdll.so"))
+    if platform.processor() == "aarch64":
+        blingfire = cdll.LoadLibrary(os.path.join(path, "linux/arm64/libblingfiretokdll.so"))
+    elif platform.processor() == "x86_64":
+        blingfire = cdll.LoadLibrary(os.path.join(path, "linux/64/libblingfiretokdll.so"))
 
 
 def text_to_sentences(s):
