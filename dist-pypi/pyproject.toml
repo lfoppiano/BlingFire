@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+#[build-system.optional-dependencies]
+#dev = ["bump-my-version"]
+
+[project]
+name = "blingfire2"
+version = "0.2.0"
+authors = [
+    {name = "Microsoft", email = "bling@microsoft.com"},
+    {name = "Luca Foppiano", email = "info@sciencialab.com"}
+]
+description = "Python wrapper of lightning fast Finite State Machine based NLP library."
+readme = "README.md"
+requires-python = ">=3.0"
+
+[tool.setuptools]
+packages = [
+    "blingfire",
+    "blingfire.linux",
+    "blingfire.linux.arm64",
+    "blingfire.mac",
+    "blingfire.mac.arm64",
+    "blingfire.win",
+    "blingfire.win.arm64"
+]
+
+[tool.setuptools.package-data]
+blingfire = [
+    "*.bin", "*.i2w", "blingfiretokdll.pdb",
+    "linux/64/*.so", "linux/arm64/*.so",
+    "win/64/*.dll", "win/arm64/*.dll",
+    "mac/64/*.dylib", "mac/arm64/*.dylib"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/lfoppiano/Blingfire/"
+
+[tool.bumpversion]
+current_version = "0.2.0"
+commit = "true"
+tag = "true"
+tag_name = "v{new_version}"
+
+#[[tool.bumpversion.files]]
+#filename = "pyproject.toml"
+#search = "version = \"{current_version}\""
+#replace = "version = \"{new_version}\""
