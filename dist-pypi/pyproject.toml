@@ -7,7 +7,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "blingfire2"
-version = "0.1.8"
+version = "0.2.0"
 authors = [
     {name = "Microsoft", email = "bling@microsoft.com"},
     {name = "Luca Foppiano", email = "info@sciencialab.com"}
@@ -39,7 +39,7 @@ blingfire = [
 "Homepage" = "https://github.com/lfoppiano/Blingfire/"
 
 [tool.bumpversion]
-current_version = "0.1.8"
+current_version = "0.2.0"
 commit = "true"
 tag = "true"
 tag_name = "v{new_version}"
