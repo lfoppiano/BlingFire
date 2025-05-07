@@ -2,14 +2,15 @@
 requires = ["setuptools>=42", "wheel"]
 build-backend = "setuptools.build_meta"
 
-[build-system.optional-dependencies]
-dev = ["bump-my-version"]
+#[build-system.optional-dependencies]
+#dev = ["bump-my-version"]
 
 [project]
-name = "blingfire"
+name = "blingfire2"
 version = "0.1.8"
 authors = [
-    {name = "Bling", email = "info@sciencialab.com"},
+    {name = "Microsoft", email = "bling@microsoft.com"},
+    {name = "Luca Foppiano", email = "info@sciencialab.com"}
 ]
 description = "Python wrapper of lightning fast Finite State Machine based NLP library."
 readme = "README.md"
@@ -41,8 +42,7 @@ blingfire = [
 current_version = "0.1.8"
 commit = "true"
 tag = "true"
-parse = "(?P<major>\\+)\\.(?P<minor>\\+)\\.(?P<patch>\\+)"
-serialize = ["{major}.{minor}.{patch}"]
+tag_name = "v{new_version}"
 
 #[[tool.bumpversion.files]]
 #filename = "pyproject.toml"
