@@ -6,7 +6,7 @@ Hi, we are a team at Microsoft called Bling (Beyond Language Understanding), we 
 
 ## Bling Fire Tokenizer Overview
 
-Bling Fire Tokenizer provides state of the art performance for Natural Language text tokenization. Bling Fire supports the following tokenization algorithms:
+Bling Fire Tokenizer provides state-of-the-art performance for Natural Language text tokenization. Bling Fire supports the following tokenization algorithms:
 
 1. Pattern-based tokenization
 2. [WordPiece](https://arxiv.org/pdf/1609.08144.pdf) tokenization
@@ -14,39 +14,39 @@ Bling Fire Tokenizer provides state of the art performance for Natural Language 
 4. [SentencePiece](https://github.com/google/sentencepiece) BPE
 5. Induced/learned syllabification patterns (identifies possible hyphenation points within a token)
 
-Bling Fire provides uniform interface for working with all four algorithms so there is no difference for the client whether to use tokenizer for XLNET, BERT or your own custom model.
+Bling Fire provides a uniform interface for working with all four algorithms, so there is no difference for the client whether to use tokenizer for XLNET, BERT, or your own custom model.
 
-Model files describe the algorithms they are built for and are loaded on demand from external file. There are also two default models for NLTK-style tokenization and sentence breaking, which does not need to be loaded. The default tokenization model follows logic of NLTK, except hyphenated words are split and a few "errors" are fixed. 
+Model files describe the algorithms they are built for and are loaded on demand from external file. There are also two default models for NLTK-style tokenization and sentence breaking, which do not need to be loaded. The default tokenization model follows logic of NLTK, except hyphenated words are split and a few "errors" are fixed. 
 
-Normalization can be added to each model, but is optional. 
+Normalization can be added to each model but is optional. 
 
 Diffrences between algorithms are [summarized here](https://github.com/microsoft/BlingFire/blob/master/doc/Bling_Fire_Tokenizer_Algorithms.pdf).
 
-Bling Fire Tokenizer high level API designed in a way that it requires minimal or no configuration, or initialization, or additional files and is friendly for use from languages like Python, Ruby, Rust, C#, JavaScript (via WASM), etc.
+Bling Fire Tokenizer high-level API designed in a way that it requires minimal or no configuration, or initialization, or additional files and is friendly for use from languages like Python, Ruby, Rust, C#, JavaScript (via WASM), etc.
 
 We have precompiled some popular models and listed with the source code reference below:
 
-| File Name   | Models it should be used for | Algorithm | Source Code |
-|------------|---------------------------------------|----|----|
-| wbd.bin | Default Tokenization Model    | Pattern-based | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/wbd) | 
-| sbd.bin | Default model for Sentence breaking    | Pattern-based | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/sbd) | 
-| bert_base_tok.bin | BERT Base/Large                                 | WordPiece | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_base_tok) |
-| bert_base_cased_tok.bin      | BERT Base/Large Cased                                 | WordPiece | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_base_cased_tok) | 
-| bert_chinese.bin       | BERT Chinese                                | WordPiece | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_chinese) | 
-| bert_multi_cased.bin       | BERT Multi Lingual Cased                                | WordPiece | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_multi_cased) | 
-| xlnet.bin | XLNET Tokenization Model    | Unigram LM | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/xlnet) | 
-| xlnet_nonorm.bin | XLNET Tokenization Model /wo normalization    | Unigram LM | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/xlnet_nonorm) | 
-| bpe_example.bin | A model to test BPE tokenization    | BPE | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bpe_example) | 
-| xlm_roberta_base.bin | XLM Roberta Tokenization | Unigram LM | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/xlm_roberta_base) | 
-| laser(100k\|250k\|500k).bin | Trained on balanced by language WikiMatrix corpus of 80+ languages | Unigram LM | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/laser100k) | 
-| uri(100k\|250k\|500k).bin | URL tokenization model trained on a large set of random URLs from the web | Unigram LM | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/uri250k) |
-| gpt2.bin | Byte-BPE tokenization model for GPT-2 | byte BPE | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/gpt2) |
-| roberta.bin | Byte-BPE tokenization model for Roberta model | byte BPE | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/roberta) |
-| syllab.bin | Multi lingual model to identify allowed hyphenation points inside a word. | W2H | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/syllab) |
+| File Name                   | Models it should be used for                                              | Algorithm     | Source Code                                                                          |
+|-----------------------------|---------------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------------|
+| wbd.bin                     | Default Tokenization Model                                                | Pattern-based | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/wbd)                 | 
+| sbd.bin                     | Default model for Sentence breaking                                       | Pattern-based | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/sbd)                 | 
+| bert_base_tok.bin           | BERT Base/Large                                                           | WordPiece     | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_base_tok)       |
+| bert_base_cased_tok.bin     | BERT Base/Large Cased                                                     | WordPiece     | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_base_cased_tok) | 
+| bert_chinese.bin            | BERT Chinese                                                              | WordPiece     | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_chinese)        | 
+| bert_multi_cased.bin        | BERT Multi Lingual Cased                                                  | WordPiece     | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bert_multi_cased)    | 
+| xlnet.bin                   | XLNET Tokenization Model                                                  | Unigram LM    | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/xlnet)               | 
+| xlnet_nonorm.bin            | XLNET Tokenization Model /wo normalization                                | Unigram LM    | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/xlnet_nonorm)        | 
+| bpe_example.bin             | A model to test BPE tokenization                                          | BPE           | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/bpe_example)         | 
+| xlm_roberta_base.bin        | XLM Roberta Tokenization                                                  | Unigram LM    | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/xlm_roberta_base)    | 
+| laser(100k\|250k\|500k).bin | Trained on balanced by language WikiMatrix corpus of 80+ languages        | Unigram LM    | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/laser100k)           | 
+| uri(100k\|250k\|500k).bin   | URL tokenization model trained on a large set of random URLs from the web | Unigram LM    | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/uri250k)             |
+| gpt2.bin                    | Byte-BPE tokenization model for GPT-2                                     | byte BPE      | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/gpt2)                |
+| roberta.bin                 | Byte-BPE tokenization model for Roberta model                             | byte BPE      | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/roberta)             |
+| syllab.bin                  | Multi lingual model to identify allowed hyphenation points inside a word. | W2H           | [src](https://github.com/microsoft/BlingFire/tree/master/ldbsrc/syllab)              |
 
-Oh yes, it is also the fastest! We did a comparison of Bling Fire with tokenizers from Hugging Face, [Bling Fire runs 4-5 times faster than Hugging Face Tokenizers](https://github.com/Microsoft/BlingFire/wiki/Comparing-performance-of-Bling-Fire-and-Hugging-Face-Tokenizers), see also [Bing Blog Post](https://blogs.bing.com/Developers-Blog/march-2020/Bling-FIRE-Tokenizer-for-BERT). We did comparison of Bling Fire Unigram LM and BPE implementaion to the same one in [SentencePiece](https://github.com/google/sentencepiece) library and our implementation is ~2x faster, see [XLNET benchmark](https://github.com/microsoft/BlingFire/blob/master/ldbsrc/xlnet/README.TXT) and [BPE benchmark](https://github.com/microsoft/BlingFire/blob/master/ldbsrc/bpe_example/README.TXT). Not to mention our default models are 10x faster than the same functionality from [SpaCy](https://github.com/explosion/spaCy), see [benchmark wiki](https://github.com/Microsoft/BlingFire/wiki/Benchmark-Guide) and this [Bing Blog Post](https://blogs.bing.com/Developers-Blog/2019-04/bling-fire-tokenizer-released-to-open-source).
+Oh yes, it is also the fastest! We did a comparison of Bling Fire with tokenizers from Hugging Face, [Bling Fire runs 4-5 times faster than Hugging Face Tokenizers](https://github.com/Microsoft/BlingFire/wiki/Comparing-performance-of-Bling-Fire-and-Hugging-Face-Tokenizers), see also [Bing Blog Post](https://blogs.bing.com/Developers-Blog/march-2020/Bling-FIRE-Tokenizer-for-BERT). We did comparison of Bling Fire Unigram LM and BPE implementation to the same one in [SentencePiece](https://github.com/google/sentencepiece) library, and our implementation is ~2x faster, see [XLNET benchmark](https://github.com/microsoft/BlingFire/blob/master/ldbsrc/xlnet/README.TXT) and [BPE benchmark](https://github.com/microsoft/BlingFire/blob/master/ldbsrc/bpe_example/README.TXT). Not to mention our default models are 10x faster than the same functionality from [SpaCy](https://github.com/explosion/spaCy), see [benchmark wiki](https://github.com/Microsoft/BlingFire/wiki/Benchmark-Guide) and this [Bing Blog Post](https://blogs.bing.com/Developers-Blog/2019-04/bling-fire-tokenizer-released-to-open-source).
 
-So if low latency inference is what you need then you have to try Bling Fire!
+So if low-latency inference is what you need, then you have to try Bling Fire!
 
 
 ## Python API Description
@@ -57,7 +57,7 @@ If you simply want to use it in Python, you can install the latest release using
 
 
 ## Examples
-### 1. Python example, using default pattern-based tokenizer:
+### 1. Python example, using the default pattern-based tokenizer:
 ```python
 from blingfire import *
 
