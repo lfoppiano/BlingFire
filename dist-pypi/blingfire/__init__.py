@@ -27,7 +27,7 @@ else:
 # detect linux
     if platform.processor() == "aarch64":
         blingfire = cdll.LoadLibrary(os.path.join(path, "linux/arm64/libblingfiretokdll.so"))
-    elif platform.processor() == "x86_64":
+    else:
         blingfire = cdll.LoadLibrary(os.path.join(path, "linux/64/libblingfiretokdll.so"))
 
 
