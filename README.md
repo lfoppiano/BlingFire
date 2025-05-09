@@ -1,5 +1,5 @@
 [![PyPI version](https://badge.fury.io/py/blingfire2.svg)](https://badge.fury.io/py/blingfire2)
-[![Downloads](https://static.pepy.tech/badge/blingfire)](https://pepy.tech/project/blingfire)
+[![Downloads](https://static.pepy.tech/badge/blingfire2)](https://pepy.tech/project/blingfire2)
 [![Build](https://github.com/lfoppiano/blingfire/actions/workflows/cmake-multi-platform.yml/badge.svg)](https://github.com/lfoppiano/blingfire/actions/workflows/cmake-multi-platform.yml)
 
 # Bling Fire
