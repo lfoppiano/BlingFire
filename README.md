@@ -1,4 +1,8 @@
+
+
 # Bling Fire
+
+**NOTE**: BlingFire is an excellent project from Microsoft, which was abandoned a few years ago. I've fixed the support for the various libraries which was making using BlingFire a pain and I've tried to get in contact with them so that all the changes made here could be pushed upstream. Microsoft's team doesn't seem to be aware or reachable, so I will maintain Bling Fire on this repo till and if they come back. **FYI I renamed it BlingFire 2 on Pypy**.
 
 ## Introduction
 
