@@ -59,8 +59,9 @@ So if low-latency inference is what you need, then you have to try Bling Fire!
 
 If you simply want to use it in Python, you can install the latest release using [pip](https://pypi.org/project/pip/):
 
-`pip install -U blingfire`
+`pip install -U blingfire2`
 
+*NOTE*: Due to Microsoft unresponsiveness, we have to publish the updated version as `blingfire2`. 
 
 ## Examples
 ### 1. Python example, using the default pattern-based tokenizer:
