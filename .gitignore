@@ -346,3 +346,6 @@ ASALocalRun/
 .mfractor/
 cmake/
 cmake-*
+.idea
+**/.gradle
+
