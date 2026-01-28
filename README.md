@@ -63,7 +63,16 @@ If you simply want to use it in Python, you can install the latest release using
 
 `pip install -U blingfire2`
 
-*NOTE*: Due to Microsoft unresponsiveness, we have to publish the updated version as `blingfire2`. 
+*NOTE*: Due to Microsoft unresponsiveness, we have to publish the updated version as `blingfire2`.
+
+### Cross-platform configuration
+
+If you're using `blingfire2` for local macOS development (ARM64) but want to use the official Microsoft `blingfire` in production (e.g. Linux x86_64), you can add the following to your dependency configuration (e.g. in `pyproject.toml` or `setup.py`):
+
+```
+"blingfire>=0.1.8; sys_platform != 'darwin' or platform_machine != 'arm64'",
+"blingfire2>=0.2.1; sys_platform == 'darwin' or platform_machine == 'arm64'",
+```
 
 ## Examples
 ### 1. Python example, using the default pattern-based tokenizer:
