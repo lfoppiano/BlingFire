@@ -353,6 +353,9 @@ Note: please read the documents above in the order before creating your own mode
 
 Bling Fire is supported for Windows, Linux and Mac (Thanks to Andrew Kane!)
 
+## Requirements
+* CMake 3.10 or higher (for building from source)
+
 
 ## Contributing
 
