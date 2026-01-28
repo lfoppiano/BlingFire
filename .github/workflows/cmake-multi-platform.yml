@@ -94,9 +94,14 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Copy lib
+      shell: bash
       run: |
         mkdir -p output/blingfire/${{ env.OS }}/${{ env.ARCH }}
-        cp ${{ steps.strings.outputs.build-output-dir }}/*blingfiretokdll.${{env.LIB_EXTENSION}} output/blingfire/${{ env.OS }}/${{ env.ARCH }}
+        if [ "${{ env.OS }}" == "win" ]; then
+          cp build/Release/*blingfiretokdll.${{env.LIB_EXTENSION}} output/blingfire/${{ env.OS }}/${{ env.ARCH }}
+        else
+          cp build/*blingfiretokdll.${{env.LIB_EXTENSION}} output/blingfire/${{ env.OS }}/${{ env.ARCH }}
+        fi
 
     - name: Save Lib
       uses: actions/upload-artifact@v4
@@ -138,3 +143,12 @@ jobs:
         with:
           name: blingfire-bin-all-${{ steps.extract_rev_id.outputs.short_commit_id }}
           path: output
+
+
+  ci-success:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: assemble-artifact
+    if: ${{ success() }}
+    steps:
+      - run: echo "All CI matrix jobs + the assembler successfully passed"
