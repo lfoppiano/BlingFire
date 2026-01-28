@@ -139,3 +139,12 @@ jobs:
         with:
           name: blingfire-bin-all-${{ steps.extract_rev_id.outputs.short_commit_id }}
           path: output
+
+
+  ci-success:
+    name: CI
+    runs-on: ubuntu-latest
+    needs: assemble-artifact
+    if: ${{ success() }}
+    steps:
+      - run: echo "All CI matrix jobs + the assembler successfully passed"
