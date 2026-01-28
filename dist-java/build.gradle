@@ -20,33 +20,31 @@ def osName = System.getProperty("os.name").toLowerCase()
 def osArch = System.getProperty("os.arch").toLowerCase()
 
 // Compile native libs using CMake
-task buildNative {
-    doLast {
-        def buildDir = file('../build')
-        if (!buildDir.exists()) {
-            buildDir.mkdirs()
-        }
-        
-        // Find JAVA_HOME
-        def javaHome = System.getenv("JAVA_HOME")
-        if (javaHome == null) {
-            // fallback to current JVM home, might be JRE though
-             javaHome = System.getProperty("java.home")
-             if (javaHome.endsWith("jre")) {
-                 javaHome = javaHome.substring(0, javaHome.length() - 4)
-             }
-        }
-
-        exec {
-            workingDir '../build'
-            // We pass -fPIC via CMakeLists.txt usually, but good to ensure
-            commandLine 'cmake', '..', "-DJAVA_HOME=${javaHome}"
-        }
-        exec {
-            workingDir '../build'
-            commandLine 'make', 'blingfirejni' 
-        }
+// Compile native libs using CMake
+task cmake(type: Exec) {
+    doFirst {
+        file('../build').mkdirs()
     }
+    workingDir file('../build')
+    
+    // Find JAVA_HOME
+    def javaHome = System.getenv("JAVA_HOME")
+    if (javaHome == null) {
+         javaHome = System.getProperty("java.home")
+         if (javaHome.endsWith("jre")) {
+             javaHome = javaHome.substring(0, javaHome.length() - 4)
+         }
+    }
+    
+    commandLine 'cmake', '..', "-DJAVA_HOME=${javaHome}"
+    standardOutput = System.out
+}
+
+task buildNative(type: Exec) {
+    dependsOn cmake
+    workingDir file('../build')
+    commandLine 'make', 'blingfirejni'
+    standardOutput = System.out
 }
 
 // copy native libs to resources
@@ -62,7 +60,11 @@ task copyNativeLibs(type: Copy) {
 }
 
 // Clean up resources before processing to avoid stale libs
+// Clean up resources before processing to avoid stale libs
 processResources.dependsOn copyNativeLibs
+
+// Ensure sourcesJar depends on copyNativeLibs if it includes resources
+sourcesJar.dependsOn copyNativeLibs
 
 publishing {
     publications {

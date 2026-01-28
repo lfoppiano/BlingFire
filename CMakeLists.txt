@@ -11,30 +11,9 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfirecompile.library/inc)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfirecompile.library/src)
 
 # JNI headers
-if (JAVA_HOME)
-    include_directories(${JAVA_HOME}/include)
-    if (UNIX)
-        if (APPLE)
-            include_directories(${JAVA_HOME}/include/darwin)
-        else()
-             include_directories(${JAVA_HOME}/include/linux)
-        endif()
-    elseif(WIN32)
-        include_directories(${JAVA_HOME}/include/win32)
-    endif()
-endif()
-# JNI headers
-if (JAVA_HOME)
-    include_directories(${JAVA_HOME}/include)
-    if (UNIX)
-        if (APPLE)
-            include_directories(${JAVA_HOME}/include/darwin)
-        else()
-             include_directories(${JAVA_HOME}/include/linux)
-        endif()
-    elseif(WIN32)
-        include_directories(${JAVA_HOME}/include/win32)
-    endif()
+find_package(JNI REQUIRED)
+if (JNI_FOUND)
+    include_directories(${JNI_INCLUDE_DIRS})
 endif()
 
 IF (APPLE OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
@@ -158,9 +137,20 @@ INSTALL(
 )
 
 # JNI Library
+# JNI Library
 add_library(blingfirejni SHARED dist-java/src/main/c/blingfire_jni.cpp)
 target_include_directories(blingfirejni PRIVATE blingfiretools/blingfiretokdll)
-target_link_libraries(blingfirejni PRIVATE fsaClient)
+
+# Modern CMake: link against JNI::JNI if available, otherwise manual includes
+if(TARGET JNI::JNI)
+    target_link_libraries(blingfirejni PRIVATE JNI::JNI)
+else()
+    target_include_directories(blingfirejni PRIVATE ${JNI_INCLUDE_DIRS})
+    target_link_libraries(blingfirejni PRIVATE ${JNI_LIBRARIES})
+endif()
+
+# Link against the core BlingFire static library to get the implementation of symbols
+target_link_libraries(blingfirejni PRIVATE blingfiretokdll_static fsaClient)
 
 INSTALL(
   TARGETS blingfirejni
