@@ -94,9 +94,14 @@ jobs:
       run: ctest --build-config ${{ matrix.build_type }}
 
     - name: Copy lib
+      shell: bash
       run: |
         mkdir -p output/blingfire/${{ env.OS }}/${{ env.ARCH }}
-        cp ${{ steps.strings.outputs.build-output-dir }}/*blingfiretokdll.${{env.LIB_EXTENSION}} output/blingfire/${{ env.OS }}/${{ env.ARCH }}
+        if [ "${{ env.OS }}" == "win" ]; then
+          cp ${{ steps.strings.outputs.build-output-dir }}/Release/*blingfiretokdll.${{env.LIB_EXTENSION}} output/blingfire/${{ env.OS }}/${{ env.ARCH }}
+        else
+          cp ${{ steps.strings.outputs.build-output-dir }}/*blingfiretokdll.${{env.LIB_EXTENSION}} output/blingfire/${{ env.OS }}/${{ env.ARCH }}
+        fi
 
     - name: Save Lib
       uses: actions/upload-artifact@v4
