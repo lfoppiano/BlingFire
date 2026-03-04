@@ -110,6 +110,30 @@ public class BlingFire {
     public static native int GetBlingFireTokVersion();
 
     /**
+     * Splits text into sentences using the built-in default model.
+     *
+     * @param inUtf8Str input UTF-8 bytes
+     * @param inUtf8StrByteCount input byte count
+     * @param outUtf8Str output buffer for newline-delimited sentences
+     * @param maxOutUtf8StrByteCount output buffer size
+     * @return number of bytes written, or -1 on error
+     */
+    public static native int TextToSentences(byte[] inUtf8Str, int inUtf8StrByteCount,
+            byte[] outUtf8Str, int maxOutUtf8StrByteCount);
+
+    /**
+     * Tokenizes text into words using the built-in default model.
+     *
+     * @param inUtf8Str input UTF-8 bytes
+     * @param inUtf8StrByteCount input byte count
+     * @param outUtf8Str output buffer for space-delimited words
+     * @param maxOutUtf8StrByteCount output buffer size
+     * @return number of bytes written, or -1 on error
+     */
+    public static native int TextToWords(byte[] inUtf8Str, int inUtf8StrByteCount,
+            byte[] outUtf8Str, int maxOutUtf8StrByteCount);
+
+    /**
      * Splits text into sentences using the specified model.
      *
      * @param inUtf8Str input UTF-8 bytes
@@ -568,6 +592,58 @@ public class BlingFire {
 
         int actualSize = TextToWordsWithModel(inputBytes, inputBytes.length,
                 outputBytes, outputBufferSize, modelHandle);
+
+        if (actualSize <= 0) {
+            return new String[0];
+        }
+
+        String result = new String(outputBytes, 0, actualSize, StandardCharsets.UTF_8);
+        return result.split(" ");
+    }
+
+    /**
+     * Splits text into sentences using the built-in default model (no model file needed).
+     *
+     * @param text input text
+     * @return array of sentences
+     */
+    public static String[] textToSentences(String text) {
+        if (text == null || text.isEmpty()) {
+            return new String[0];
+        }
+
+        byte[] inputBytes = text.getBytes(StandardCharsets.UTF_8);
+        int outputBufferSize = inputBytes.length * 2 + 1024;
+        byte[] outputBytes = new byte[outputBufferSize];
+
+        int actualSize = TextToSentences(inputBytes, inputBytes.length,
+                outputBytes, outputBufferSize);
+
+        if (actualSize <= 0) {
+            return new String[0];
+        }
+
+        String result = new String(outputBytes, 0, actualSize, StandardCharsets.UTF_8);
+        return result.split("\n");
+    }
+
+    /**
+     * Tokenizes text into words using the built-in default model (no model file needed).
+     *
+     * @param text input text
+     * @return array of words
+     */
+    public static String[] textToWords(String text) {
+        if (text == null || text.isEmpty()) {
+            return new String[0];
+        }
+
+        byte[] inputBytes = text.getBytes(StandardCharsets.UTF_8);
+        int outputBufferSize = inputBytes.length * 2 + 1024;
+        byte[] outputBytes = new byte[outputBufferSize];
+
+        int actualSize = TextToWords(inputBytes, inputBytes.length,
+                outputBytes, outputBufferSize);
 
         if (actualSize <= 0) {
             return new String[0];

@@ -23,6 +23,34 @@ JNIEXPORT void JNICALL Java_com_github_lfoppiano_blingfire_BlingFire_FreeModel
     FreeModel((void*) handle);
 }
 
+JNIEXPORT jint JNICALL Java_com_github_lfoppiano_blingfire_BlingFire_TextToSentences
+  (JNIEnv *env, jclass cls, jbyteArray inBytes, jint inLen, jbyteArray outBytes, jint maxOutLen) {
+
+    jbyte* inBuf = env->GetByteArrayElements(inBytes, NULL);
+    jbyte* outBuf = env->GetByteArrayElements(outBytes, NULL);
+
+    int res = TextToSentences((char*)inBuf, (int)inLen, (char*)outBuf, (int)maxOutLen);
+
+    env->ReleaseByteArrayElements(inBytes, inBuf, JNI_ABORT);
+    env->ReleaseByteArrayElements(outBytes, outBuf, 0);
+
+    return res;
+}
+
+JNIEXPORT jint JNICALL Java_com_github_lfoppiano_blingfire_BlingFire_TextToWords
+  (JNIEnv *env, jclass cls, jbyteArray inBytes, jint inLen, jbyteArray outBytes, jint maxOutLen) {
+
+    jbyte* inBuf = env->GetByteArrayElements(inBytes, NULL);
+    jbyte* outBuf = env->GetByteArrayElements(outBytes, NULL);
+
+    int res = TextToWords((char*)inBuf, (int)inLen, (char*)outBuf, (int)maxOutLen);
+
+    env->ReleaseByteArrayElements(inBytes, inBuf, JNI_ABORT);
+    env->ReleaseByteArrayElements(outBytes, outBuf, 0);
+
+    return res;
+}
+
 JNIEXPORT jint JNICALL Java_com_github_lfoppiano_blingfire_BlingFire_TextToSentencesWithModel
   (JNIEnv *env, jclass cls, jbyteArray inBytes, jint inLen, jbyteArray outBytes, jint maxOutLen, jlong handle) {
 

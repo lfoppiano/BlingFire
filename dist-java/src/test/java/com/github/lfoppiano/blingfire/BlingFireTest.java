@@ -185,6 +185,24 @@ class BlingFireTest {
     }
 
     @Test
+    void testDefaultTextToSentences() {
+        String text = "Hello world. How are you?";
+        String[] sentences = BlingFire.textToSentences(text);
+        assertNotNull(sentences);
+        assertEquals(2, sentences.length, "Expected 2 sentences");
+        assertEquals("Hello world.", sentences[0].trim());
+        assertEquals("How are you?", sentences[1].trim());
+    }
+
+    @Test
+    void testDefaultTextToWords() {
+        String text = "Hello world";
+        String[] words = BlingFire.textToWords(text);
+        assertNotNull(words);
+        assertTrue(words.length >= 2, "Expected at least 2 words");
+    }
+
+    @Test
     void testStaticTextToSentences() {
         long handle = BlingFire.loadModel(sbdModelPath);
         try {
