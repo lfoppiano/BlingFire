@@ -5,65 +5,52 @@ plugins {
 }
 
 group = 'com.github.lfoppiano'
-version = '0.2.1'
+version = '0.3.0'
 
 repositories {
     mavenCentral()
 }
 
 java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.2'
+}
+
+test {
+    useJUnitPlatform()
+    // Allow the native library to be found in the CMake build directory
+    def buildDir = System.getenv('BLINGFIRE_BUILD_DIR') ?: '../build'
+    systemProperty 'java.library.path', buildDir
 }
 
 def osName = System.getProperty("os.name").toLowerCase()
 def osArch = System.getProperty("os.arch").toLowerCase()
 
-// Compile native libs using CMake
-// Compile native libs using CMake
-task cmake(type: Exec) {
-    doFirst {
-        file('../build').mkdirs()
-    }
-    workingDir file('../build')
-    
-    // Find JAVA_HOME
-    def javaHome = System.getenv("JAVA_HOME")
-    if (javaHome == null) {
-         javaHome = System.getProperty("java.home")
-         if (javaHome.endsWith("jre")) {
-             javaHome = javaHome.substring(0, javaHome.length() - 4)
-         }
-    }
-    
-    commandLine 'cmake', '..', "-DJAVA_HOME=${javaHome}"
-    standardOutput = System.out
-}
+// Determine OS and arch for native resource layout
+def nativeOs = osName.contains('linux') ? 'linux' :
+               osName.contains('mac') || osName.contains('darwin') ? 'darwin' :
+               osName.contains('win') ? 'win' : 'unknown'
 
-task buildNative(type: Exec) {
-    dependsOn cmake
-    workingDir file('../build')
-    commandLine 'make', 'blingfirejni'
-    standardOutput = System.out
-}
+def nativeArch = osArch.contains('amd64') || osArch.contains('x86_64') ? 'x86_64' :
+                 osArch.contains('aarch64') || osArch.contains('arm64') ? 'aarch64' : 'unknown'
 
-// copy native libs to resources
+// Copy native JNI lib from CMake build into the resource layout
 task copyNativeLibs(type: Copy) {
-    dependsOn buildNative
     from('../build') {
         include 'libblingfirejni.so'
         include 'libblingfirejni.dylib'
         include 'blingfirejni.dll'
     }
-    // Package into 'resources' so it goes into the JAR
-    into 'src/main/resources' 
+    into "src/main/resources/native/${nativeOs}/${nativeArch}"
 }
 
-// Clean up resources before processing to avoid stale libs
-// Clean up resources before processing to avoid stale libs
 processResources.dependsOn copyNativeLibs
-
-// Ensure sourcesJar depends on copyNativeLibs if it includes resources
 sourcesJar.dependsOn copyNativeLibs
 
 publishing {
@@ -72,7 +59,7 @@ publishing {
             from components.java
             pom {
                 name = 'BlingFire Java'
-                description = 'Java bindings for Microsoft BlingFire'
+                description = 'Java bindings for BlingFire - a high-performance NLP tokenization library'
                 url = 'https://github.com/lfoppiano/blingfire'
                 licenses {
                     license {
@@ -95,4 +82,21 @@ publishing {
             }
         }
     }
+    repositories {
+        maven {
+            name = 'OSSRH'
+            def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username = System.getenv('OSSRH_USERNAME') ?: ''
+                password = System.getenv('OSSRH_PASSWORD') ?: ''
+            }
+        }
+    }
+}
+
+signing {
+    required { gradle.taskGraph.hasTask('publish') }
+    sign publishing.publications.mavenJava
 }

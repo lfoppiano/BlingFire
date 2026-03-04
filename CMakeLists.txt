@@ -7,11 +7,10 @@ set (BLING_FIRE_VERSION "0.1.8")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfireclient.library/inc)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfireclient.library/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfirecompile.library/inc)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfirecompile.library/inc)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/blingfirecompile.library/src)
 
-# JNI headers
-find_package(JNI REQUIRED)
+# JNI headers (optional - only needed for Java bindings)
+find_package(JNI)
 if (JNI_FOUND)
     include_directories(${JNI_INCLUDE_DIRS})
 endif()
@@ -136,28 +135,29 @@ INSTALL(
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-# JNI Library
-# JNI Library
-add_library(blingfirejni SHARED dist-java/src/main/c/blingfire_jni.cpp)
-target_include_directories(blingfirejni PRIVATE blingfiretools/blingfiretokdll)
+# JNI Library (only built when JNI is available)
+if (JNI_FOUND)
+    add_library(blingfirejni SHARED dist-java/src/main/c/blingfire_jni.cpp)
+    target_include_directories(blingfirejni PRIVATE blingfiretools/blingfiretokdll)
 
-# Modern CMake: link against JNI::JNI if available, otherwise manual includes
-if(TARGET JNI::JNI)
-    target_link_libraries(blingfirejni PRIVATE JNI::JNI)
-else()
-    target_include_directories(blingfirejni PRIVATE ${JNI_INCLUDE_DIRS})
-    target_link_libraries(blingfirejni PRIVATE ${JNI_LIBRARIES})
+    # Modern CMake: link against JNI::JNI if available, otherwise manual includes
+    if(TARGET JNI::JNI)
+        target_link_libraries(blingfirejni PRIVATE JNI::JNI)
+    else()
+        target_include_directories(blingfirejni PRIVATE ${JNI_INCLUDE_DIRS})
+        target_link_libraries(blingfirejni PRIVATE ${JNI_LIBRARIES})
+    endif()
+
+    # Link against the core BlingFire static library to get the implementation of symbols
+    target_link_libraries(blingfirejni PRIVATE blingfiretokdll_static fsaClient)
+
+    INSTALL(
+      TARGETS blingfirejni
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
 endif()
-
-# Link against the core BlingFire static library to get the implementation of symbols
-target_link_libraries(blingfirejni PRIVATE blingfiretokdll_static fsaClient)
-
-INSTALL(
-  TARGETS blingfirejni
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
