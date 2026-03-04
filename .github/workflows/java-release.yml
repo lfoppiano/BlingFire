@@ -1,0 +1,108 @@
+name: Java Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-native:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04-arm, macos-latest, macos-15-intel, windows-latest]
+        include:
+          - os: ubuntu-22.04
+            native_os: linux
+            native_arch: x86_64
+            lib_name: libblingfirejni.so
+          - os: ubuntu-24.04-arm
+            native_os: linux
+            native_arch: aarch64
+            lib_name: libblingfirejni.so
+          - os: macos-latest
+            native_os: darwin
+            native_arch: aarch64
+            lib_name: libblingfirejni.dylib
+          - os: macos-15-intel
+            native_os: darwin
+            native_arch: x86_64
+            lib_name: libblingfirejni.dylib
+          - os: windows-latest
+            native_os: win
+            native_arch: x86_64
+            lib_name: blingfirejni.dll
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Configure CMake
+      run: cmake -B build -DCMAKE_BUILD_TYPE=Release -S .
+
+    - name: Build JNI library
+      run: cmake --build build --config Release --target blingfirejni
+
+    - name: Prepare native lib artifact
+      shell: bash
+      run: |
+        mkdir -p native/${{ matrix.native_os }}/${{ matrix.native_arch }}
+        if [ "${{ matrix.native_os }}" == "win" ]; then
+          cp build/Release/${{ matrix.lib_name }} native/${{ matrix.native_os }}/${{ matrix.native_arch }}/ 2>/dev/null || \
+          cp build/${{ matrix.lib_name }} native/${{ matrix.native_os }}/${{ matrix.native_arch }}/
+        else
+          cp build/${{ matrix.lib_name }} native/${{ matrix.native_os }}/${{ matrix.native_arch }}/
+        fi
+
+    - name: Upload native lib
+      uses: actions/upload-artifact@v4
+      with:
+        name: jni-${{ matrix.native_os }}-${{ matrix.native_arch }}
+        path: native/
+
+  publish:
+    needs: build-native
+    runs-on: ubuntu-22.04
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+
+    - name: Download all native libs
+      uses: actions/download-artifact@v4
+      with:
+        path: native-artifacts
+
+    - name: Arrange native libs in resource directory
+      shell: bash
+      run: |
+        for dir in native-artifacts/jni-*; do
+          cp -r "$dir"/* dist-java/src/main/resources/
+        done
+        echo "Native lib layout:"
+        find dist-java/src/main/resources/native -type f
+
+    - name: Import GPG key
+      env:
+        GPG_PRIVATE_KEY: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+      run: echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+
+    - name: Publish to Maven Central
+      working-directory: dist-java
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        ORG_GRADLE_PROJECT_signingKeyId: ${{ secrets.GPG_KEY_ID }}
+        ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+      run: ./gradlew publish --no-daemon

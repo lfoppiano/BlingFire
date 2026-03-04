@@ -354,13 +354,65 @@ If you want to create your own tokenization or any other finite-state model, you
 Note: please read the documents above in the order before creating your own model. If you have any questions please start an Issue in Github.
 
 
+### 10. Java example, sentence breaking and BERT tokenization
+
+Java bindings are available via Maven Central:
+
+**Gradle:**
+```groovy
+implementation 'com.github.lfoppiano:blingfire-java:0.3.0'
+```
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>com.github.lfoppiano</groupId>
+    <artifactId>blingfire-java</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
+**Sentence breaking:**
+```java
+import com.github.lfoppiano.blingfire.BlingFire;
+
+// Using try-with-resources for automatic model cleanup
+try (BlingFire.Model model = new BlingFire.Model("sbd.bin")) {
+    String text = "Hello world. How are you? I am fine.";
+    String[] sentences = model.textToSentences(text);
+    for (String sentence : sentences) {
+        System.out.println(sentence);
+    }
+}
+```
+
+**BERT tokenization:**
+```java
+try (BlingFire.Model model = new BlingFire.Model("bert_base_tok.bin")) {
+    String text = "I saw a girl with a telescope.";
+    int[] ids = model.textToIds(text, 128, 100);
+    System.out.println(java.util.Arrays.toString(ids));
+
+    // With offsets
+    BlingFire.TextToIdsResult result = model.textToIdsWithOffsets(text, 128, 100);
+    for (int i = 0; i < result.getCount(); i++) {
+        System.out.printf("ID=%d offset=[%d,%d]%n",
+            result.getIds()[i], result.getStartOffsets()[i], result.getEndOffsets()[i]);
+    }
+}
+```
+
 ## Support for other programming languages
 1. [Rust wrapper](https://github.com/reinfer/blingfire-rs)
 2. [Ruby wrapper](https://github.com/ankane/blingfire)
+3. [Java bindings](dist-java/) (included in this repository)
 
 ## Supported Platforms
 
 Bling Fire is supported for Windows, Linux and Mac (Thanks to Andrew Kane!)
+
+## Requirements
+* CMake 3.10 or higher (for building from source)
 
 
 ## Contributing
