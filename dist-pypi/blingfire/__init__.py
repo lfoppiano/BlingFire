@@ -25,7 +25,7 @@ elif platform.system() == "Darwin":
         blingfire = cdll.LoadLibrary(os.path.join(path, "mac/64/libblingfiretokdll.dylib"))
 else:
 # detect linux
-    if platform.processor() == "aarch64":
+    if platform.machine() == "aarch64":
         blingfire = cdll.LoadLibrary(os.path.join(path, "linux/arm64/libblingfiretokdll.so"))
     else:
         blingfire = cdll.LoadLibrary(os.path.join(path, "linux/64/libblingfiretokdll.so"))
