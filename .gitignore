@@ -351,3 +351,7 @@ cmake-*
 
 .idea
 
+# Java native libraries (built by CI)
+dist-java/src/main/resources/native/**/*.so
+dist-java/src/main/resources/native/**/*.dylib
+dist-java/src/main/resources/native/**/*.dll
