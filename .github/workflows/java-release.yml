@@ -88,10 +88,22 @@ jobs:
       shell: bash
       run: |
         for dir in native-artifacts/jni-*; do
-          cp -r "$dir"/* dist-java/src/main/resources/
+          cp -r "$dir"/* dist-java/src/main/resources/native/
         done
         echo "Native lib layout:"
         find dist-java/src/main/resources/native -type f
+
+    - name: Verify native lib completeness
+      shell: bash
+      run: |
+        for expected in linux/x86_64/libblingfirejni.so linux/aarch64/libblingfirejni.so darwin/aarch64/libblingfirejni.dylib darwin/x86_64/libblingfirejni.dylib win/x86_64/blingfirejni.dll; do
+          if [ ! -f "dist-java/src/main/resources/native/$expected" ]; then
+            echo "ERROR: Missing native lib: $expected"
+            exit 1
+          fi
+        done
+        echo "All expected native libraries present."
+        find dist-java/src/main/resources/native -type f \( -name '*.so' -o -name '*.dylib' -o -name '*.dll' \) -exec ls -la {} \;
 
     - name: Import GPG key
       env:

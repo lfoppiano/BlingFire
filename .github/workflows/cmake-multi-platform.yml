@@ -59,9 +59,9 @@ jobs:
 
     - name: Set OS and ARCH variables
       run: |
-        echo "OS=$(if [ ${{ runner.os }} == 'Linux' ]; then echo 'linux'; elif [ ${{ runner.os }} == 'Windows' ]; then echo 'win'; elif [ ${{ runner.os }} == 'macOS' ]; then echo 'mac'; fi)" >> $GITHUB_ENV
+        echo "OS=$(if [ ${{ runner.os }} == 'Linux' ]; then echo 'linux'; elif [ ${{ runner.os }} == 'Windows' ]; then echo 'win'; elif [ ${{ runner.os }} == 'macOS' ]; then echo 'darwin'; fi)" >> $GITHUB_ENV
         echo "LIB_EXTENSION=$(if [ ${{ runner.os }} == 'Linux' ]; then echo 'so'; elif [ ${{ runner.os }} == 'Windows' ]; then echo 'dll'; elif [ ${{ runner.os }} == 'macOS' ]; then echo 'dylib'; fi)" >> $GITHUB_ENV
-        echo "ARCH=${{ runner.arch == 'X64' && '64' || 'arm64' }}" >> $GITHUB_ENV
+        echo "ARCH=${{ runner.arch == 'X64' && 'x86_64' || 'aarch64' }}" >> $GITHUB_ENV
       shell: bash
 
     - name: Set reusable strings
