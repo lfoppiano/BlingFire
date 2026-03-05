@@ -88,7 +88,7 @@ jobs:
       shell: bash
       run: |
         for dir in native-artifacts/jni-*; do
-          cp -r "$dir"/* dist-java/src/main/resources/
+          cp -r "$dir"/* dist-java/src/main/resources/native/
         done
         echo "Native lib layout:"
         find dist-java/src/main/resources/native -type f
